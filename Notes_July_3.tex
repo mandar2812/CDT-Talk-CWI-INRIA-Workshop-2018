@@ -1,0 +1,67 @@
+Preparation Giancarlo venue to CWI.
+
+Data; 
+SOHO
+* magnetic field, chaotic;
+** black/white indicates the direction
+* X-ray emissions; (spectral line of particular atoms, four wavelentgths)
+SDO: same, but more wavelengths; and already combined together (would have to be done manually from SOHO).
+
+two frequencies + MAGNETIC.
+
+First layers, 
+convolution + batch norm;
+symmetric central patch; tri-dimensional tensor; 
+Mhamed used also LASCO C3; 
+
+Part 1: semi-empirical near-Sun module that approximates the outflow at the base of the solar wind.
+Part 2: a sophisticated 3D magnetohydrodynamic numerical model that simulates the resulting flow evolution on the Earth.
+
+--------------
+System CDT (Causal Dynamic Time Lag).
+[WAW (What and When)]
+* Artificial datasets: all good.
+* Real-world data: we still miss the proper input/the important data.
+** magnetic must be there
+** needs a time window in the image (to extract the angular speed ? omega).
+** what about x-rays emission ? Travels very fast; says something about the presence of events.
+
+------------------
+First sanity check/ visual input -wise
+2010, SDO; chocolate image (aia 193 frequency).
+predict the solar wind t + 3 days.
+
+Second sanity check:
+image now; image 27 days before; series of solar wind speed in the [t-27, t] period.
+
+--------------
+Giancarlo:
+* wants to implement and train convolutional RBM on solar images;
+* try adaptation for translation invariances with RBM models; 
+* convolutional RBM is what I would do first; also, generative models; could be GAN or auto-encoders;
+* experiment with standard models; 
+* would be nice to understand how to generate good features; nice features; proper representation; just to compress data;
+
+Mandar:
+* could be interested to emulate the module 1 above; time series of images;  
+* learning the representation and the dynamics; how evolves along time; compression very useful for further prediction;
+* many time slices of images; 
+
+Giancarlo:
+* interesting; practically; treat time individually as a prediction problem; 
+
+Mandard:
+* after the compression, the prediction
+
+Cyril:
+* learn the rotation
+* entire rotation period; 
+
+Domain adaptation
+* SOHO and SDO give two views of the same information; redundant ? can predict one from the other ? (green and chocolate); 
+
+
+
+
+
+
