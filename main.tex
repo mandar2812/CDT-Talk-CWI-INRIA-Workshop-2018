@@ -49,7 +49,7 @@
 \title{Causal Dynamic Time Lag (CDT)}
 
 % A subtitle is optional and this may be deleted
-\subtitle{A Probabilistic Approach for Physical Systems}
+\subtitle{Applications to Space Weather}
 
 \author{Mandar ~Chandorkar}
 % - Give the names in the same order as the appear in the paper.
@@ -105,6 +105,81 @@
   % You might wish to add the option [pausesections]
 \end{frame}
 
+\section{Motivation}
+
+\subsection{Space Weather}
+
+\begin{frame}
+\begin{figure}[h]
+        \includegraphics[width=0.85\textwidth]{space-weather.jpg}
+        \caption{The Sun-Earth system}
+        \label{fig:sun-earth}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\begin{figure}[h]
+        \includegraphics[width=0.85\textwidth]{nasa-space-weather.jpg}
+        \caption{Effects of Solar Disturbances}
+        \label{fig:sun-earth-nasa}
+\end{figure}
+\end{frame}
+
+\subsection{Financial Markets}
+
+\begin{frame}
+\begin{figure}[h]
+        \includegraphics[width=0.80\textwidth]{spread-vs-stocks.png}
+        \caption{Yield curves and Recessions in the U.S. Economy}
+        \label{fig:fed-rate}
+\end{figure}
+\end{frame}
+
+\section{Causality in Time Series}
+
+\subsection{Concepts}
+
+\begin{frame}{Granger Causality}
+\begin{enumerate}
+\item The cause happens prior to its effect.
+\item The cause has unique information about the future values of its effect.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\begin{figure}[h]
+        \includegraphics[width=0.80\textwidth]{GrangerCausality.png}
+        \caption{By BiObserver - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=33470670}
+        \label{fig:granger}
+\end{figure}
+\end{frame}
+
+\subsection{Existing Research}
+
+\begin{frame}{Nonparametric learning of time-lag}
+
+\cite{ZHOU2006195} formulated the problem as minimisation of the \emph{mismatch} between two time series.
+
+\textbf{Inputs}: $X(t), Y(t)$, two time series.
+
+\textbf{Learn}: A mapping $\phi(t_1) = t_2$ which minimises 
+
+\begin{equation}
+\epsilon(t_t, t_2) = |X(t_1) - Y(t_2)|
+\end{equation}
+
+
+\end{frame}
+
+\begin{frame}
+\begin{figure}[h]
+        \includegraphics[width=0.90\textwidth]{polymer-alignment.png}
+        \caption{An example of energy landscape $E_{X,Y}$ given by (1) for two noisy time series and the corresponding optimal path wandering at the bottom of the valley similarly to a river. This optimal path defines the mapping $t1 \rightarrow t2 = \phi(t1)$.}
+        \label{fig:polymer}
+\end{figure}
+\end{frame}
+
+
 % Section and subsections will appear in the presentation overview
 % and table of contents.
 \section{Problem \& Model}
@@ -115,7 +190,7 @@
   Given an input (cause) and output (effect) time series, predict 
   \begin{itemize}
   \item {
-      Magnitude of output signal. (What)
+      Magnitude of output signal. (What/How much)
   }
   \item {
       When the effect will be observed in the output signal (When)
@@ -165,11 +240,11 @@ Balance two incentives
 
 \begin{enumerate}
     \item Generate accurate predictions for time window $y(t+\ell), \cdots, y(t+\ell+h-1)$
+    \newline
     \item Learn time lag structure according to some prior.
 \end{enumerate}
 \end{frame}
 
-\subsection{Loss Function}
 \begin{frame}{Training Loss}
 \begin{align*}
 \mathcal{L}(y^{(1:M)}, \hat{y}^{(1:M)}, \hat{p}^{(1:M)}) = &\lambda_1 \sum_{i,m}{\frac{1}{2M} (y^{(m)}_{i} - \hat{y}^{(m)}_{i})^2 (1 + \hat{p}^{(m)}_i)} \\ &+ \\ &\lambda_2 \mathcal{J}(y^{(1:M)}, \hat{y}^{(1:M)}, \hat{p}^{(1:M)})
@@ -181,7 +256,6 @@ The term $\mathcal{J}(y^{(1:M)}, \hat{y}^{(1:M)}, \hat{p}^{(1:M)})$ penalizes th
     
 \end{frame}
 
-\subsection{Target Distribution}
 \begin{frame}{Prior: Target Probability}
 The \textit{target probability} $\widetilde{p}$ for a time window $[t+\ell, t+\ell+h-1]$ can be characterized by:
 \newline
@@ -195,6 +269,15 @@ The lagged output $y(t+i)$ which has greater predictability given $x(t)$, is a m
 
 
 \begin{frame}{Prior Contd.}
+
+\begin{enumerate}
+\item The target probability distribution for the time lag is, $\widetilde{p}^{(m)} = softmax( (y^{(m)} - \hat{y}^{(m)})^{2}/T )$
+\newline
+\item The term $\mathcal{J}(y^{(1:M)}, \hat{y}^{(1:M)}, \hat{p}^{(1:M)})$ can be computed as the \emph{Hellinger distance} between $\hat{p}$ and $\widetilde{p}$.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
 \begin{align*}
 \mathcal{J}(y^{(1:M)}, \hat{y}^{(1:M)}, \hat{p}^{(1:M)}) &= \sum_{m = 1}^{M}{\frac{1}{M} \sqrt{\sum_{i}{(\sqrt{\widetilde{p}^{(m)}_i} -  \sqrt{\hat{p}^{(m)}_i})^2}}} \\\\
 \widetilde{p}^{(m)} &= softmax( (y^{(m)} - \hat{y}^{(m)})^{2}/T )
@@ -204,9 +287,7 @@ The lagged output $y(t+i)$ which has greater predictability given $x(t)$, is a m
 
 \section{Applications}
 
-\subsection{Toy Problems}
-
-\begin{frame}{Toy Problems: Specification}
+\begin{frame}{Toy Problems}
 
 \begin{align*}
  x(t+1) &= (1 - \beta) x(t) + \mathcal{N}(0, \sigma^2) \\
@@ -226,6 +307,52 @@ $\Delta(t) = (\sqrt{\alpha^2||x(t)||^4 - 2ad} - \alpha||x(t)||^2)/a$
 \end{block}
 
 \end{frame}
+
+\subsection{Problem I}
+\begin{frame}{Data}
+    \begin{figure}[h]
+        \includegraphics[width=0.75\textwidth]{timeseries-problem-i.png}
+        \caption{Generated Data}
+        \label{fig:TimeSeries-i}
+      \end{figure}
+\end{frame}
+
+
+\begin{frame}{Predictions}
+    \begin{figure}[h]
+        \includegraphics[width=0.75\textwidth]{predictions-i.png}
+        \caption{Test Set Time Series vs Predictions}
+        \label{fig:predictions-i}
+      \end{figure}
+\end{frame}
+
+\begin{frame}{Errors}
+    \begin{figure}[h]
+        \includegraphics[width=0.75\textwidth]{errors-i.png}
+        \caption{Error in Output vs Error in Time Lag}
+        \label{fig:errors-i}
+      \end{figure}
+\end{frame}
+
+\begin{frame}{Performance}
+ 
+\begin{block}{Output}
+\textbf{MAE}: 8.602 \\
+\textbf{Pearson Corr}: 0.964 \\
+\textbf{Spearman Corr}: 0.999
+\end{block}
+
+\begin{block}{Time Lag}
+\textbf{MAE}: 0 \\
+\textbf{Pearson Corr}: N.A \\
+\textbf{Spearman Corr}: 1.0
+\end{block}
+
+
+
+\end{frame}
+
+
 
 \subsection{Problem II}
 \begin{frame}{Data}
@@ -343,14 +470,7 @@ $\Delta(t) = (\sqrt{\alpha^2||x(t)||^4 - 2ad} - \alpha||x(t)||^2)/a$
 \textbf{Pearson Corr}: 0.415 \\
 \textbf{Spearman Corr}: 0.999
 \end{block}
-
-
-
 \end{frame}
-
-
-\subsection{Solar Images}
-
 
 
 % All of the following is optional and typically not needed. 
