@@ -248,7 +248,7 @@ Balance two incentives
 \begin{enumerate}
     \item Generate accurate predictions for time window $y(t+\ell), \cdots, y(t+\ell+h-1)$
     \newline
-    \item Learn time lag structure according to some prior.
+    \item Learn time lag structure according to some intuition.
 \end{enumerate}
 \end{frame}
 
@@ -258,12 +258,12 @@ Balance two incentives
 \end{align*}
 \end{frame}
 
-\begin{frame}{Training Loss: Prior}
+\begin{frame}{Training Loss Contd.}
 The term $\mathcal{J}(y^{(1:M)}, \hat{y}^{(1:M)}, \hat{p}^{(1:M)})$ penalizes the predicted probabilities $\hat{p}^{(1:M)}$, for deviation from some chosen \textit{target probability}.
     
 \end{frame}
 
-\begin{frame}{Prior: Target Probability}
+\begin{frame}{Target Probability}
 The \textit{target probability} $\widetilde{p}$ for a time window $[t+\ell, t+\ell+h-1]$ can be characterized by:
 \newline
 
@@ -275,7 +275,7 @@ The lagged output $y(t+i)$ which has greater predictability given $x(t)$, is a m
 \end{frame}
 
 
-\begin{frame}{Prior Contd.}
+\begin{frame}{Target Probability Contd.}
 
 \begin{enumerate}
 \item The target probability distribution for the time lag is, $\widetilde{p}^{(m)} = softmax( (y^{(m)} - \hat{y}^{(m)})^{2}/T )$
@@ -284,17 +284,20 @@ The lagged output $y(t+i)$ which has greater predictability given $x(t)$, is a m
 \end{enumerate}
 \end{frame}
 
-\begin{frame}
-\begin{align*}
-\mathcal{J}(y^{(1:M)}, \hat{y}^{(1:M)}, \hat{p}^{(1:M)}) &= \sum_{m = 1}^{M}{\frac{1}{M} \sqrt{\sum_{i}{(\sqrt{\widetilde{p}^{(m)}_i} -  \sqrt{\hat{p}^{(m)}_i})^2}}} \\\\
-\widetilde{p}^{(m)} &= softmax( (y^{(m)} - \hat{y}^{(m)})^{2}/T )
-\end{align*}
-\end{frame}
-
 
 \section{Applications}
 
-\begin{frame}{Toy Problems}
+\subsection{Benchmarks}
+
+\begin{frame}{Need for Benchmarks}
+\begin{enumerate}
+\item Labelled data sets are small in size.
+\newline
+\item Most real world data sets dont have explicit labels for causal time lag.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Benchmark Problems}
 
 \begin{align*}
  x(t+1) &= (1 - \beta) x(t) + \mathcal{N}(0, \sigma^2) \\
@@ -324,6 +327,13 @@ $\Delta(t) = (\sqrt{\alpha^2||x(t)||^4 - 2ad} - \alpha||x(t)||^2)/a$
       \end{figure}
 \end{frame}
 
+\begin{frame}{Errors}
+    \begin{figure}[h]
+        \includegraphics[width=0.75\textwidth]{errors-i.png}
+        \caption{Error in Output vs Error in Time Lag}
+        \label{fig:errors-i}
+      \end{figure}
+\end{frame}
 
 \begin{frame}{Predictions}
     \begin{figure}[h]
@@ -333,13 +343,6 @@ $\Delta(t) = (\sqrt{\alpha^2||x(t)||^4 - 2ad} - \alpha||x(t)||^2)/a$
       \end{figure}
 \end{frame}
 
-\begin{frame}{Errors}
-    \begin{figure}[h]
-        \includegraphics[width=0.75\textwidth]{errors-i.png}
-        \caption{Error in Output vs Error in Time Lag}
-        \label{fig:errors-i}
-      \end{figure}
-\end{frame}
 
 \begin{frame}{Performance}
  
